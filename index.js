@@ -1,6 +1,6 @@
 const expenses = {
-  Alice: 60.90,
-  Bob: 120,
+  Alice: 200,
+  Bob: 40,
   Charlie: 30,
   Dave: 900.10,
 };
@@ -14,11 +14,20 @@ splitExpenses = (expenses) => {
     throw "Object length cannot be less than or equal to 1."
   }
 
+  for (var key in expenses) {
+    if (expenses.hasOwnProperty(key)) {
+      if (typeof expenses[key] !== 'number') {
+        throw "Object has value(s) which is not a number."
+      }
+    }
+  }
+
   try {
     const people = Object.keys(expenses);
     // console.log('people: ', people)
     const numOfPeople = people.length
     // console.log('total no. of people: ', numOfPeople)
+
     const amountPaid = Object.values(expenses);
     // console.log('amountPaid: ', amountPaid)
     const sum = amountPaid.reduce((acc, curr) => curr + acc);
@@ -28,10 +37,12 @@ splitExpenses = (expenses) => {
 
     const sortedPeople = people.sort((personA, personB) => expenses[personA] - expenses[personB]);
     // console.log('sort people according to the amount they paid (small to large): ', sortedPeople)
-    const sortedAmount = sortedPeople.map((person) => expenses[person])
+    // const sortedAmount = sortedPeople.map((person) => expenses[person])
     // console.log('amount they paid: ', sortedAmount)
-    const sortedValuesPaid = sortedPeople.map((person) => expenses[person] - mean);
-    // console.log('difference between amount paid and average amount: ', sortedValuesPaid)
+    const sortedDifference = sortedPeople.map((person) => expenses[person] - mean);
+    // console.log('difference between amount paid and average amount: ', sortedDifference)
+
+    console.log(expenses);
 
     let i = 0;
     let j = sortedPeople.length - 1;
@@ -41,16 +52,16 @@ splitExpenses = (expenses) => {
     console.log('\nOutput: ')
     while (i < j) {
       txn++;
-      debt = Math.min(-(sortedValuesPaid[i]), sortedValuesPaid[j]);
-      sortedValuesPaid[i] += debt;
-      sortedValuesPaid[j] -= debt;
+      debt = Math.min(-(sortedDifference[i]), sortedDifference[j]);
+      sortedDifference[i] += debt;
+      sortedDifference[j] -= debt;
 
       console.log(`${sortedPeople[i]} pays ${sortedPeople[j]} $${debt.toFixed(2)}`);
-      if (sortedValuesPaid[i] === 0) {
+      if (sortedDifference[i] === 0) {
         i++;
       }
 
-      if (sortedValuesPaid[j] === 0) {
+      if (sortedDifference[j] === 0) {
         j--;
       }
     }
